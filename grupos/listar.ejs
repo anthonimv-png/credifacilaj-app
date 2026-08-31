@@ -1,0 +1,56 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <%- include('../partials/sidebar') %>
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="max-width: 1200px; margin: 10px auto;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2 style="color: #1e3a8a; margin: 0; font-weight: 800; font-size: 26px;">📁 Grupos de Crédito Registrados</h2>
+                    <a href="/grupos/crear" class="btn btn-primary fw-bold" style="background: #2563eb; border: none; padding: 10px 20px; border-radius: 8px; color: white; text-decoration: none;">➕ Crear Nuevo Grupo</a>
+                </div>
+
+                <div class="table-responsive" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden;">
+                    <table class="table" style="margin-bottom: 0; vertical-align: middle;">
+                        <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <tr style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">
+                                <th style="padding: 14px 16px; text-align: center; width: 80px;">ID</th>
+                                <th style="padding: 14px 16px;">Nombre del Grupo</th>
+                                <th style="padding: 14px 16px;">Integrantes y Roles</th>
+                                <th style="padding: 14px 16px; text-align: center; width: 220px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (typeof grupos === 'undefined' || !grupos || grupos.length === 0) { %>
+                                <tr><td colspan="4" style="padding: 40px; text-align: center; color: #94a3b8; font-style: italic;">No se registran grupos de crédito en el sistema actualmente.</td></tr>
+                            <% } else { %>
+                                <% grupos.forEach(function(grupo) { %>
+                                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 14.5px;">
+                                        <td style="padding: 16px; font-weight: 700; color: #64748b; text-align: center;"><%= grupo.id %></td>
+                                        <td style="padding: 16px; font-weight: 800; color: #1e3a8a; text-transform: uppercase;"><%= grupo.nombre %></td>
+                                        
+                                        <!-- Inyección limpia directa desde la subconsulta del Servidor Node -->
+                                        <td style="padding: 16px; color: #475569; max-width: 450px; line-height: 1.5; font-weight: 600; text-transform: uppercase;">
+                                            <%= grupo.integrantes_roles %>
+                                        </td>
+                                        
+                                        <td style="padding: 16px; text-align: center;">
+                                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <a href="/grupos/miembros/<%= grupo.id %>" class="btn btn-sm btn-outline-primary fw-bold" style="padding: 6px 14px; border-radius: 6px; border: 1px solid #cbd5e1; color: #334155; text-decoration: none; background: white;">👤 Miembros</a>
+                                                <a href="/grupos/eliminar/<%= grupo.id %>" onclick="return confirm('⚠️ ¿Estás seguro?')" class="btn btn-sm btn-danger fw-bold" style="padding: 6px 14px; border-radius: 6px; border: none; background: #fee2e2; color: #b91c1c; text-decoration: none;">🗑️ Eliminar</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

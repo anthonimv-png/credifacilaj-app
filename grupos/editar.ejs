@@ -1,0 +1,203 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo de CREDIFACIL A&J -->
+        <%- include('../partials/sidebar') %>
+        
+        <!-- Contenedor Principal del Formulario de Miembros -->
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="max-width: 850px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
+                    <h2 style="color: #1e3a8a; margin: 0; font-weight: 800; font-size: 24px;">📝 Modificar Integrantes del Grupo</h2>
+                </div>
+
+                <!-- Formulario tradicional con envío POST nativo sin fetch rotos -->
+                <form action="/grupos/guardar-miembros-tradicional" method="POST">
+                    
+                    <!-- ID del Grupo Oculto para asentar en Laragon -->
+                    <input type="hidden" name="grupo_id" value="<%= (typeof grupo !== 'undefined' && grupo) ? (grupo.id || '') : '' %>">
+
+                    <!-- Nombre del Grupo -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Nombre del Grupo:</label>
+                        <input type="text" value="<%= (typeof grupo !== 'undefined' && grupo) ? (grupo.nombre || '') : 'PAMPAS' %>" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #334155; background: #f8fafc; text-transform: uppercase;" readonly>
+                    </div>
+
+                    <!-- Buscar Cliente para Agregar (🔄 SINCRO MAESTRA IDENTICA A CREAR) -->
+                    <div style="margin-bottom: 25px; position: relative;">
+                        <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Buscar Cliente para Agregar:</label>
+                        <input type="text" id="input_buscar_cliente_editar" onkeyup="filtrarClientesEditarGrupo()" placeholder="Escribe el nombre o DNI del cliente..." style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #1e3a8a;" autocomplete="off">
+                        
+                        <!-- Caja desplegable flotante de resultados -->
+                        <div id="lista_desplegable_clientes_editar" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-radius: 0 0 6px 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; max-height: 200px; overflow-y: auto;"></div>
+                    </div>
+
+                    <!-- Integrantes del Grupo Actuales -->
+                    <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 12px;">Integrantes del Grupo Actuales</label>
+                    
+                    <div class="table-responsive" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
+                        <table class="table" style="margin-bottom: 0; vertical-align: middle; text-align: center;">
+                            <thead style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                                <tr style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">
+                                    <th style="padding: 10px; text-align: left;">Cliente</th>
+                                    <th style="padding: 10px;">Etiqueta / Rol</th>
+                                    <th style="padding: 10px; width: 100px;">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla_cuerpo_miembros_servidor">
+                                <% let listaActual = (typeof miembros !== 'undefined' && miembros) ? miembros : (typeof integrantes !== 'undefined' ? integrantes : []); %>
+                                
+                                <% if (!listaActual || listaActual.length === 0) { %>
+                                    <tr id="fila_vacia_editar_m">
+                                        <td colspan="3" style="padding: 20px; text-align: center; color: #64748b; font-style: italic; font-size: 13.5px;">
+                                            No hay integrantes asignados a este grupo actualmente. Selecciona arriba para agregarlos.
+                                        </td>
+                                    </tr>
+                                <% } else { %>
+                                    <% listaActual.forEach(function(item) { %>
+                                        <tr class="fila-miembro-activa" data-cliente-id="<%= item.cliente_id || item.id %>" style="border-bottom: 1px solid #f1f5f9; font-size: 14px;">
+                                            <td style="padding: 12px; text-align: left; font-weight: 700; color: #1e293b; text-transform: uppercase;">
+                                                👤 <%= item.cliente_nombre || item.nombre_completo %>
+                                                <input type="hidden" name="clientes_ids" value="<%= item.cliente_id || item.id %>">
+                                                <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">💳 DNI: <%= item.dni || 'Verificado' %></div>
+                                            </td>
+                                            <td style="padding: 12px;">
+                                                <select name="roles" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-weight: 600; color: #334155;">
+                                                    <option value="INTEGRANTE" <%= (String(item.rol).toUpperCase() === 'INTEGRANTE') ? 'selected' : '' %>>Integrante</option>
+                                                    <option value="LIDER" <%= (String(item.rol).toUpperCase() === 'LIDER' || String(item.rol).toUpperCase() === 'COORDINADORA') ? 'selected' : '' %>>Líder</option>
+                                                </select>
+                                            </td>
+                                            <td style="padding: 12px;">
+                                                <button type="button" onclick="quitarClienteDeEdicion(this)" style="background: #fee2e2; color: #b91c1c; border: none; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 12px; cursor: pointer;">❌ Quitar</button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
+                            </tbody>
+                                                </table>
+                    </div>
+
+                    <!-- Footer de Control -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                        <a href="/grupos" style="text-decoration: none; color: #64748b; font-weight: 700; font-size: 14px;">⬅️ Volver al Historial</a>
+                        <button type="submit" style="background: #2563eb; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(37,99,235,0.15);">
+                            💾 Guardar Cambios del Grupo
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 🏎️ MOTOR DE BÚSQUEDA ASÍNCRONO AUTOMÁTICO (IDÉNTICO A CREAR) -->
+<script>
+async function filtrarClientesEditarGrupo() {
+    const palabra = document.getElementById('input_buscar_cliente_editar').value.trim();
+    const desplegable = document.getElementById('lista_desplegable_clientes_editar');
+    
+    if (palabra.length < 2) {
+        desplegable.style.display = 'none';
+        return;
+    }
+
+    try {
+        // Consultamos el endpoint nativo de búsqueda inline en Laragon
+        const responseClientes = await fetch('/grupos/buscar-cliente-inline?q=' + encodeURIComponent(palabra));
+        
+        let clientesFormateados = [];
+        if (responseClientes && responseClientes.ok) {
+            clientesFormateados = await responseClientes.json();
+        }
+
+        if (clientesFormateados.length === 0) {
+            desplegable.innerHTML = '<div style="padding: 10px; color: #64748b; font-style: italic; font-size: 13px; text-align: center;">⚠️ No se encontraron clientes registrados.</div>';
+            desplegable.style.display = 'block';
+            return;
+        }
+
+        desplegable.innerHTML = '';
+        desplegable.style.display = 'block';
+
+        clientesFormateados.forEach(c => {
+            const div = document.createElement('div');
+            div.style = "padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-weight: 700; font-size: 13.5px; color: #1e293b; transition: background 0.2s; text-align: left;";
+            div.onmouseover = function() { this.style.background = "#f8fafc"; };
+            div.onmouseout = function() { this.style.background = "white"; };
+            
+            div.innerHTML = `👤 ${c.nombre} <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">💳 DNI: ${c.dni}</div>`;
+            
+            div.onclick = function() {
+                inyectarClienteDirectoATabla(c.id, c.nombre, c.dni);
+                desplegable.style.display = 'none';
+                document.getElementById('input_buscar_cliente_editar').value = '';
+            };
+            desplegable.appendChild(div);
+        });
+    } catch(err) {
+        console.error("Error en búsqueda:", err);
+    }
+}
+
+// INYECTA LA FILA AL SELECCIONAR DESDE LA LISTA FLOTANTE
+function inyectarClienteDirectoATabla(clienteId, nombreCompleto, dni) {
+    const tbody = document.getElementById('tabla_cuerpo_miembros_servidor');
+    const filaVacia = document.getElementById('fila_vacia_editar_m');
+    if (filaVacia) filaVacia.remove();
+
+    // Buscamos duplicados exactos en los inputs del formulario
+    if (document.querySelector(`input[name="clientes_ids"][value="${clienteId}"]`)) {
+        return alert("⚠️ Esta clienta ya está agregada en la tabla inferior.");
+    }
+
+    const tr = document.createElement('tr');
+    tr.className = "fila-miembro-activa";
+    tr.setAttribute('data-cliente-id', clienteId);
+    tr.style = "border-bottom: 1px solid #f1f5f9; font-size: 14px;";
+    tr.innerHTML = `
+        <td style="padding: 12px; text-align: left; font-weight: 700; color: #1e293b; text-transform: uppercase;">
+            👤 ${nombreCompleto}
+            <input type="hidden" name="clientes_ids" value="${clienteId}">
+            <div style="font-size: 11px; color: #64748b; font-weight: 600; margin-top: 2px;">💳 DNI: ${dni}</div>
+        </td>
+        <td style="padding: 12px;">
+            <select name="roles" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-weight: 600; color: #334155;">
+                <option value="INTEGRANTE" selected>Integrante</option>
+                <option value="LIDER">Líder</option>
+            </select>
+        </td>
+        <td style="padding: 12px;">
+            <button type="button" onclick="quitarClienteDeEdicion(this)" style="background: #fee2e2; color: #b91c1c; border: none; padding: 4px 10px; border-radius: 4px; font-weight: 700; font-size: 12px; cursor: pointer;">❌ Quitar</button>
+        </td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function quitarClienteDeEdicion(boton) {
+    boton.closest('tr').remove();
+    const tbody = document.getElementById('tabla_cuerpo_miembros_servidor');
+    if (tbody.querySelectorAll('.fila-miembro-activa').length === 0) {
+        tbody.innerHTML = `
+            <tr id="fila_vacia_editar_m">
+                <td colspan="3" style="padding: 20px; text-align: center; color: #64748b; font-style: italic; font-size: 13.5px;">
+                    No hay integrantes asignados a este grupo actualmente. Selecciona arriba para agregarlos.
+                </td>
+            </tr>`;
+    }
+}
+
+// Oculta el menú desplegable si se hace clic en cualquier otro lado
+document.addEventListener("click", function(e) {
+    if (e.target.id !== 'input_buscar_cliente_editar') {
+        const desplegable = document.getElementById('lista_desplegable_clientes_editar');
+        if (desplegable) desplegable.style.display = 'none';
+    }
+});
+</script>
+
+<%- include('../partials/footer') %>

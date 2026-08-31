@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container" style="max-width: 800px;">
+                    <h2 class="mb-4">📦 Registrar Nuevo Empeño</h2>
+
+                    <% if(mensajeError && mensajeError.length > 0) { %>
+                        <div class="alert alert-danger"><%= mensajeError %></div>
+                    <% } %>
+
+                    <div class="card card-box p-4 border-0 shadow-sm">
+                        <form action="/empenos/guardar" method="POST" enctype="multipart/form-data">
+                            
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Cliente Propietario *</label>
+                                    <select name="cliente_id" class="form-select" required>
+                                        <option value="">-- Seleccionar Cliente --</option>
+                                        <% clientes.forEach(c => { %>
+                                            <option value="<%= c.id %>"><%= c.nombre %> <%= c.apellido %> (DNI: <%= c.dni %>)</option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold">Nombre del Artículo *</label>
+                                    <input type="text" name="nombre_articulo" class="form-control" required placeholder="Ej: Laptop HP Pavilion, Joya de Oro...">
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Fecha Límite</label>
+                                    <input type="date" name="fecha_limite" class="form-control" required value="<%= new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T')[0] %>">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Descripción / Estado</label>
+                                    <textarea name="descripcion" class="form-control" rows="2" placeholder="Detalles, número de serie, estado de conservación..."></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Valor Tasación (Real)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><%= empresa.moneda %></span>
+                                        <input type="number" step="0.01" name="valor_tasacion" class="form-control" placeholder="0.00">
+                                    </div>
+                                    <div class="form-text">Valor estimado del mercado.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-primary">Monto a Prestar *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white"><%= empresa.moneda %></span>
+                                        <input type="number" step="0.01" name="monto_prestado" class="form-control border-primary fw-bold" required placeholder="0.00">
+                                    </div>
+                                    <div class="form-text">Dinero que se entrega al cliente.</div>
+                                </div>
+
+                                <div class="col-12 mt-3">
+                                    <label class="form-label fw-bold">Fotografía del Artículo</label>
+                                    <input type="file" name="imagen" class="form-control" accept="image/*">
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/empenos" class="btn btn-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-warning text-dark fw-bold px-4">
+                                    <i class="bi bi-save"></i> Registrar Garantía
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>
