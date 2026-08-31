@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>🔐 Gestión de Usuarios</h2>
+                        <a href="/usuarios/crear" class="btn btn-dark">
+                            <i class="bi bi-person-plus-fill"></i> Nuevo Usuario
+                        </a>
+                    </div>
+
+                    <div class="card card-box p-3 shadow-sm">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% usuarios.forEach(u => { %>
+                                    <tr>
+                                        <td><%= u.id %></td>
+                                        <td class="fw-bold"><%= u.nombre_completo %></td>
+                                        <td><%= u.email %></td>
+                                        <td>
+                                            <% if(u.rol == 'admin') { %>
+                                                <span class="badge bg-danger">Administrador</span>
+                                            <% } else { %>
+                                                <span class="badge bg-primary">Empleado</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if(u.estado == 1) { %>
+                                                <span class="badge bg-success">Activo</span>
+                                            <% } else { %>
+                                                <span class="badge bg-secondary">Inactivo</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if(usuario.id != u.id) { %>
+                                                <a href="#" onclick="confirmarEliminacion(event, '/usuarios/eliminar/<%= u.id %>')" class="btn btn-sm btn-outline-danger" title="Eliminar Usuario">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            <% } else { %>
+                                                <small class="text-muted">(Tú)</small>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

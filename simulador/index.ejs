@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container">
+                    <h2 class="mb-4">🧮 Calculadora de Préstamos</h2>
+
+                    <% if(mensajeError && mensajeError.length > 0) { %>
+                        <div class="alert alert-danger"><%= mensajeError %></div>
+                    <% } %>
+
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card card-box p-4 h-100">
+                                <h5 class="text-secondary mb-3">Datos del Crédito</h5>
+                                <form action="/simulador/calcular" method="POST">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Monto a Prestar (<%= empresa.moneda %>)</label>
+                                        <input type="number" step="0.01" name="monto" class="form-control" value="<%= datos.monto %>" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Interés Total (%)</label>
+                                        <input type="number" step="0.01" name="interes" class="form-control" value="<%= datos.interes %>" required>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <label class="form-label">Cuotas</label>
+                                            <input type="number" name="cuotas" class="form-control" value="<%= datos.cuotas %>" required>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <label class="form-label">Frecuencia</label>
+                                            <select name="frecuencia" class="form-select">
+                                                <option value="diario" <%= datos.frecuencia == 'diario' ? 'selected' : '' %>>Diario</option>
+                                                <option value="semanal" <%= datos.frecuencia == 'semanal' ? 'selected' : '' %>>Semanal</option>
+                                                <option value="quincenal" <%= datos.frecuencia == 'quincenal' ? 'selected' : '' %>>Quincenal</option>
+                                                <option value="mensual" <%= datos.frecuencia == 'mensual' ? 'selected' : '' %>>Mensual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid mt-3">
+                                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-calculator"></i> Calcular Ahora</button>
+                                        <a href="/simulador" class="btn btn-outline-secondary mt-2">Limpiar</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <% if (resultado) { %>
+                                <div class="card card-box p-0 overflow-hidden h-100 border-primary">
+                                    <div class="card-header bg-primary text-white p-3">
+                                        <h5 class="mb-0 text-white"><i class="bi bi-bar-chart-fill"></i> Proyección de Pagos</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        
+                                        <div class="row text-center mb-4 g-2">
+                                            <div class="col-4">
+                                                <div class="border rounded p-2 bg-light">
+                                                    <small class="text-muted">Prestado</small>
+                                                    <h5 class="fw-bold text-dark mb-0"><%= empresa.moneda %> <%= resultado.montoPrestado.toFixed(2) %></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="border rounded p-2 bg-light">
+                                                    <small class="text-muted">Interés (<%= resultado.tasa %>%)</small>
+                                                    <h5 class="fw-bold text-success mb-0">+<%= empresa.moneda %> <%= resultado.montoInteres.toFixed(2) %></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="border rounded p-2 bg-warning-subtle">
+                                                    <small class="text-muted">Total a Pagar</small>
+                                                    <h5 class="fw-bold text-dark mb-0"><%= empresa.moneda %> <%= resultado.montoTotal.toFixed(2) %></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-striped table-hover text-center table-sm">
+                                                <thead class="table-dark sticky-top">
+                                                    <tr>
+                                                        <th>Cuota</th>
+                                                        <th>Fecha Aprox.</th>
+                                                        <th>Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% resultado.cronograma.forEach(c => { %>
+                                                        <tr>
+                                                            <td class="fw-bold"><%= c.numero %></td>
+                                                            <td><%= c.fecha.toLocaleDateString() %></td>
+                                                            <td class="text-primary fw-bold"><%= empresa.moneda %> <%= c.monto.toFixed(2) %></td>
+                                                        </tr>
+                                                    <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="alert alert-info mt-3 mb-0 small"><i class="bi bi-info-circle"></i> Fechas referenciales.</div>
+                                    </div>
+                                </div>
+                            <% } else { %>
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted border rounded bg-light" style="min-height: 300px;">
+                                    <i class="bi bi-calculator fs-1 mb-3 opacity-50"></i>
+                                    <h4>Esperando datos...</h4>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

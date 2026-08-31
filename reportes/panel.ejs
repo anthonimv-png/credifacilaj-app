@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container" style="max-width: 800px;">
+                    <h2 class="mb-4">📊 Centro de Reportes Avanzados</h2>
+
+                    <% if(mensajeError && mensajeError.length > 0) { %>
+                        <div class="alert alert-danger"><%= mensajeError %></div>
+                    <% } %>
+
+                    <div class="card card-box p-4 border-0 shadow-sm">
+                        <h5 class="text-secondary mb-4">Generar Reporte en Excel</h5>
+                        
+                        <form action="/reportes/generar" method="POST">
+                            <div class="row g-3">
+                                
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">¿Qué deseas analizar?</label>
+                                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                                        <div class="col">
+                                            <input type="radio" class="btn-check" name="tipo_reporte" id="rep1" value="prestamos" checked>
+                                            <label class="btn btn-outline-primary w-100 h-100 p-3" for="rep1">
+                                                <i class="bi bi-cash-stack fs-2 d-block mb-2"></i>
+                                                Préstamos Otorgados
+                                            </label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="radio" class="btn-check" name="tipo_reporte" id="rep2" value="pagos">
+                                            <label class="btn btn-outline-success w-100 h-100 p-3" for="rep2">
+                                                <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
+                                                Cobros Recibidos
+                                            </label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="radio" class="btn-check" name="tipo_reporte" id="rep3" value="gastos">
+                                            <label class="btn btn-outline-danger w-100 h-100 p-3" for="rep3">
+                                                <i class="bi bi-graph-down-arrow fs-2 d-block mb-2"></i>
+                                                Gastos Operativos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12"><hr></div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Fecha Inicio</label>
+                                    <input type="date" name="fecha_inicio" class="form-control" value="<%= new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0] %>" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Fecha Fin</label>
+                                    <input type="date" name="fecha_fin" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required>
+                                </div>
+
+                                <div class="col-12 mt-4 text-end">
+                                    <button type="submit" class="btn btn-dark btn-lg px-5">
+                                        <i class="bi bi-file-earmark-spreadsheet-fill"></i> Descargar Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mt-4 text-muted small">
+                        <i class="bi bi-info-circle"></i> Los reportes se generan en formato .xlsx compatible con Microsoft Excel y Google Sheets.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>
