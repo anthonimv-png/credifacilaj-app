@@ -1,0 +1,157 @@
+/* --- CONFIGURACIÓN GLOBAL --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6; /* Gris muy suave, mejor para la vista */
+    color: #495057;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* --- SIDEBAR (Barra Lateral) --- */
+.sidebar {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); /* Azul oscuro profundo */
+    color: #fff;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.sidebar .brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.sidebar .nav-link {
+    color: #94a3b8; /* Gris azulado */
+    font-weight: 500;
+    padding: 12px 20px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255,255,255,0.1);
+    padding-left: 25px; /* Efecto de desplazamiento */
+}
+
+.sidebar .nav-link.active {
+    background-color: #3b82f6; /* Azul brillante */
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+/* --- TARJETAS (Cards) --- */
+.card-box {
+    border: none;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Sombra suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card-box:hover {
+    transform: translateY(-5px); /* Efecto de flotar al pasar el mouse */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #f1f1f1;
+    font-weight: 600;
+    padding: 15px 20px;
+}
+
+/* --- TABLAS --- */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 15px;
+}
+
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* --- BOTONES --- */
+.btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-success {
+    background-color: #10b981;
+    border-color: #10b981;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* --- BADGES (Etiquetas de estado) --- */
+.badge {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* --- INPUTS --- */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #fff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
