@@ -1,0 +1,146 @@
+<div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar">
+    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+        
+        <!-- ENCABEZADO DINÁMICO: Carga tu logo y nombre corporativo dinámicamente -->
+        <a href="/" class="d-flex flex-column align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none brand w-100">
+            <% if (typeof empresa !== 'undefined' && empresa && empresa.logo) { %>
+                <img src="/uploads/<%= empresa.logo %>" alt="Logo" class="rounded-circle mb-2 bg-white p-1" style="width: 50px; height: 50px; object-fit: contain;">
+            <% } else { %>
+                <div class="bg-primary rounded-circle p-2 mb-2 d-flex align-items-center justify-content-center shadow-sm" style="width: 50px; height: 50px;">
+                    <i class="bi bi-bank2 fs-4 text-white"></i>
+                </div>
+            <% } %>
+            <span class="d-none d-sm-inline small text-center text-truncate w-100 fw-bold">
+                <%= (typeof empresa !== 'undefined' && empresa && empresa.nombre_empresa) ? empresa.nombre_empresa : 'Sistema Préstamos' %>
+            </span>
+        </a>
+
+        <!-- MENÚ DE OPCIONES INTEGRADO -->
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 mt-3" id="menu">
+            
+            <li class="nav-item w-100">
+                <a href="/" class="nav-link align-middle px-0">
+                    <i class="bi bi-grid-1x2-fill"></i> <span class="ms-1 d-none d-sm-inline">Panel Principal</span>
+                </a>
+            </li>
+            
+            <li class="nav-header text-uppercase text-muted small fw-bold mt-3 mb-1 ps-2 d-none d-sm-block" style="font-size: 0.7rem;">Operaciones</li>
+
+            <% if (typeof alertasVencidos !== 'undefined' && alertasVencidos > 0) { %>
+                <li class="nav-item w-100 mb-1">
+                    <a href="/prestamos/vencidos" class="nav-link px-0 align-middle text-white bg-danger bg-opacity-75 shadow-sm rounded">
+                        <i class="bi bi-bell-fill ms-2 animate__animated animate__swing animate__infinite"></i> 
+                        <span class="ms-1 d-none d-sm-inline fw-bold">Cobranza</span>
+                        <span class="badge bg-white text-danger ms-2 rounded-pill"><%= alertasVencidos %></span>
+                    </a>
+                </li>
+            <% } %>
+
+            <li class="nav-item w-100">
+                <a href="/clientes" class="nav-link px-0 align-middle">
+                    <i class="bi bi-people-fill"></i> <span class="ms-1 d-none d-sm-inline">Clientes</span>
+                </a>
+            </li>
+            
+            <li class="nav-item w-100">
+                <a href="/prestamos" class="nav-link px-0 align-middle">
+                    <i class="bi bi-cash-stack"></i> <span class="ms-1 d-none d-sm-inline">Préstamos</span>
+                </a>
+            </li>
+            
+            <li class="nav-item w-100">
+                <a href="/Grupos" class="nav-link px-0 align-middle">
+                    <i class="bi bi-collection"></i> <span class="ms-1 d-none d-sm-inline">Grupos</span>
+                </a>
+            </li>
+
+            <li class="nav-item w-100">
+                <a href="/simulador" class="nav-link px-0 align-middle">
+                    <i class="bi bi-calculator"></i> <span class="ms-1 d-none d-sm-inline">Calculadora</span>
+                </a>
+            </li>
+            <!-- 🗓️ ACTIVADO: Planilla Inteligente conectada al nuevo puente modular seguro -->
+            <li class="nav-item w-100">
+                <a href="/planilla/diarios" class="nav-link px-0 align-middle">
+                    <i class="bi bi-calendar-check-fill text-warning"></i> <span class="ms-1 d-none d-sm-inline fw-bold" style="color: #e2e8f0;">Planilla del Día</span>
+                </a>
+            </li>       
+            <li class="nav-item w-100">
+                <a href="/gastos" class="nav-link px-0 align-middle">
+                    <i class="bi bi-graph-down-arrow"></i> <span class="ms-1 d-none d-sm-inline">Gastos</span>
+                </a>
+            </li>
+            
+            <li class="nav-item w-100">
+                <a href="/reportes/panel" class="nav-link px-0 align-middle">
+                    <i class="bi bi-bar-chart-line-fill"></i> <span class="ms-1 d-none d-sm-inline">Reportes Excel</span>
+                </a>
+            </li>
+
+            <li class="nav-header text-uppercase text-muted small fw-bold mt-3 mb-1 ps-2 d-none d-sm-block" style="font-size: 0.7rem;">Servicios</li>
+
+            <li class="nav-item w-100">
+                <a href="/empenos" class="nav-link px-0 align-middle disabled" style="opacity: 0.5; pointer-events: none;">
+                    <i class="bi bi-gem"></i> <span class="ms-1 d-none d-sm-inline">Empeños</span>
+                </a>
+            </li>
+            
+            <li class="nav-item w-100">
+                <a href="/ahorros" class="nav-link px-0 align-middle">
+                    <i class="bi bi-piggy-bank-fill"></i> <span class="ms-1 d-none d-sm-inline">Ahorros</span>
+                </a>
+            </li>
+
+            <% if (typeof usuario !== 'undefined' && usuario && usuario.rol === 'admin') { %>
+                <li class="nav-header text-uppercase text-warning small fw-bold mt-3 mb-1 ps-2 d-none d-sm-block" style="font-size: 0.7rem;">Administración</li>
+                <li class="nav-item w-100">
+                    <a href="/caja" class="nav-link px-0 align-middle text-warning">
+                        <i class="bi bi-calculator-fill"></i> <span class="ms-1 d-none d-sm-inline">Corte de Caja</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
+                    <a href="/bitacora" class="nav-link px-0 align-middle text-warning">
+                        <i class="bi bi-eye-fill"></i> <span class="ms-1 d-none d-sm-inline">Auditoría</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
+                    <a href="/usuarios" class="nav-link px-0 align-middle text-warning">
+                        <i class="bi bi-shield-lock-fill"></i> <span class="ms-1 d-none d-sm-inline">Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item w-100">
+                    <a href="/config" class="nav-link px-0 align-middle text-warning">
+                        <i class="bi bi-gear-fill"></i> <span class="ms-1 d-none d-sm-inline">Configuración</span>
+                    </a>
+                </li>
+            <% } %>
+
+            <!-- 🛡️ SECCIÓN COPIA DE SEGURIDAD AUTOMÁTICA -->
+            <li class="nav-item w-100 border-top border-secondary mt-2 pt-2">
+                <a href="/mantenimiento/backup" class="nav-link px-0 align-middle text-info">
+                    <i class="bi bi-shield-fill-check"></i> <span class="ms-1 d-none d-sm-inline fw-bold">Copia de Seguridad</span>
+                </a>
+            </li>
+
+        </ul>
+        
+        <!-- BARRA DE SESIÓN INFERIOR -->
+        <div class="w-100 border-top border-secondary pt-3 pb-4">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle p-2 rounded hover-effect" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(255,255,255,0.05);">
+                    <div class="rounded-circle bg-success d-flex align-items-center justify-content-center text-white fw-bold me-2" style="width: 32px; height: 32px;">
+                        <%= (typeof usuario !== 'undefined' && usuario) ? usuario.nombre.charAt(0).toUpperCase() : 'U' %>
+                    </div>
+                    <span class="d-none d-sm-inline mx-1 small">
+                        <strong><%= (typeof usuario !== 'undefined' && usuario) ? usuario.nombre.split(' ')[0] : 'Usuario' %></strong>
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="/perfil">Mi Perfil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="/auth/logout"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

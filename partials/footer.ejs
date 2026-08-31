@@ -1,0 +1,65 @@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Activar Menú Lateral (Active State)
+            const currentLocation = location.pathname;
+            const menuItems = document.querySelectorAll('.sidebar .nav-link');
+            
+            menuItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (currentLocation === href || (currentLocation.startsWith(href) && href !== '/')) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 2. Detectar Mensajes Flash y mostrar SweetAlert
+            // Leemos las variables inyectadas por EJS
+            const mensajeExito = "<%= typeof mensajeExito !== 'undefined' ? mensajeExito : '' %>";
+            const mensajeError = "<%= typeof mensajeError !== 'undefined' ? mensajeError : '' %>";
+
+            if (mensajeExito) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Excelente!',
+                    text: mensajeExito,
+                    timer: 3000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }
+
+            if (mensajeError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '¡Ups!',
+                    text: mensajeError,
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+
+        // 3. Función Global para Confirmar Eliminación
+        function confirmarEliminacion(event, url) {
+            event.preventDefault(); // Detiene el clic normal
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esta acción.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si confirma, redirigimos a la URL de eliminación
+                    window.location.href = url;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

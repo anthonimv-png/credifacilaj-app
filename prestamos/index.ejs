@@ -1,0 +1,170 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo de CREDIFACIL A&J -->
+        <%- include('../partials/sidebar') %>
+        
+        <!-- Contenedor Principal del Historial -->
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="max-width: 1200px; margin: 10px auto;">
+                
+                <!-- Encabezado de la Plataforma -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h2 style="color: #1e3a8a; margin: 0; font-weight: 800; font-size: 26px;">💵 Historial General de Préstamos</h2>
+                    </div>
+                    <a href="/prestamos/crear" class="btn btn-primary fw-bold shadow-sm" style="background: #2563eb; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; color: white;">
+                        ➕ Registrar Nuevo Crédito
+                    </a>
+                </div>
+
+                <!-- Barra de Filtrado Superior -->
+                <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                    <form action="/prestamos" method="GET" style="display: flex; gap: 10px; margin: 0;">
+                        <input type="text" name="q" value="<%= (typeof busqueda !== 'undefined') ? busqueda : '' %>" placeholder="Buscar por Nombre de Cliente, DNI o Nombre de Grupo..." style="flex: 1; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-size: 14px; color: #334155;">
+                        <button type="submit" style="background: #0f172a; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;">
+                            Filtrar
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabla de Registros -->
+                <div class="table-responsive" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden;">
+                    <table class="table" style="margin-bottom: 0; vertical-align: middle;">
+                        <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                            <tr style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">
+                                <th style="padding: 14px 16px; text-align: center; width: 70px;">ID</th>
+                                <th style="padding: 14px 16px; text-align: left;">Cliente / Grupo</th>
+                                <th style="padding: 14px 16px; text-align: center;">Monto Prestado</th>
+                                <th style="padding: 14px 16px; text-align: center;">Total a Pagar</th>
+                                <th style="padding: 14px 16px; text-align: center;">Estado</th>
+                                <th style="padding: 14px 16px; text-align: center; width: 250px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                       <% if (typeof prestamos === 'undefined' || !prestamos || prestamos.length === 0) { %>
+                                <tr>
+                                    <td colspan="6" style="padding: 40px; text-align: center; color: #94a3b8; font-style: italic;">
+                                        No se registran créditos en el sistema actualmente.
+                                    </td>
+                                </tr>
+                            <% } else { %>
+                                <% prestamos.forEach(function(prestamo) { %>
+                                    <tr style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
+                                        
+                                        <!-- ID -->
+                                        <td style="padding: 16px; font-weight: 700; color: #64748b; text-align: center;">#<%= prestamo.id %></td>
+                                        
+                                        <!-- Identidad de la Ficha -->
+                                        <td style="padding: 16px; text-align: left;">
+                                            <% if (prestamo.grupo_id) { %>
+                                                <span style="background: #eff6ff; color: #1e40af; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-flex; align-items: center; text-transform: uppercase; margin-bottom: 4px;">
+                                                    👥 Grupo: <%= prestamo.grupo_nombre || 'Tumbes' %>
+                                                </span>
+                                            <% } else { %>
+                                                <span style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-flex; align-items: center; margin-bottom: 4px;">
+                                                    👤 Individual
+                                                </span>
+                                            <% } %>
+                                            <div style="font-weight: 700; color: #1e293b; font-size: 14px; text-transform: uppercase;">
+                                                <%= prestamo.cliente_nombre %>
+                                            </div>
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">💳 DNI: <%= prestamo.cliente_dni || 'Verificado' %></div>
+                                        </td>
+                                        
+                                        <!-- Capital en Soles -->
+                                        <td style="padding: 16px; text-align: center; font-weight: 700; color: #2563eb; font-size: 14.5px;">
+                                            <%= empresa.moneda %> <%= parseFloat(prestamo.monto_prestado || prestamo.monto || 0).toFixed(2) %>
+                                        </td>
+                                        
+                                        <!-- Monto con Interés -->
+                                        <td style="padding: 16px; text-align: center; font-weight: 700; color: #16a34a; font-size: 14.5px;">
+                                            <%= empresa.moneda %> <%= parseFloat(prestamo.monto_total || 0).toFixed(2) %>
+                                        </td>
+                                        
+                                        <!-- Píldoras de Estado Matriz -->
+                                        <td style="padding: 16px; text-align: center;">
+                                            <% if (prestamo.estado === 'Cancelado' || prestamo.estado === 'Pagado') { %>
+                                                <span style="background: #dcfce7; color: #15803d; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; display: inline-block;">Cancelado</span>
+                                            <% } else if (prestamo.estado === 'Vencido') { %>
+                                                <span style="background: #fee2e2; color: #b91c1c; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; display: inline-block;">⚠️ Vencido</span>
+                                            <% } else { %>
+                                                <span style="background: #e0f2fe; color: #0369a1; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 12.5px; display: inline-block;">Vigente</span>
+                                            <% } %>
+                                        </td>
+                                        
+                                                                                <!-- 🛠️ BOTONERA DE ACCIONES OPTIMIZADA, ALINEADA Y SIN DUPLICACIONES -->
+                                        <td style="padding: 16px; text-align: center;">
+                                            <% 
+                                            // Inicialización segura del rastreador por si no se declaró arriba en la tabla
+                                            if (typeof gruposBotonPintado === 'undefined') { 
+                                                global.gruposBotonPintado = global.gruposBotonPintado || [];
+                                            } else {
+                                                global.gruposBotonPintado = gruposBotonPintado;
+                                            }
+                                            %>
+                                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center; min-height: 34px;">
+                                                
+                                                <!-- Ver Cronograma Analítico (Ancho fijo alineado) -->
+                                                <a href="/prestamos/cronograma/<%= prestamo.id %>" class="btn btn-sm btn-outline-primary fw-bold" style="font-size: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; color: #1e3a8a; background: white; text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); min-width: 110px; justify-content: center;">
+                                                    📊 Cronograma
+                                                </a>
+
+                                                <!-- Cobrar Grupo Controlado Dinámicamente -->
+                                                <% if (prestamo.grupo_id) { %>
+                                                    <% if (prestamo.estado === 'Cancelado' || prestamo.estado === 'Pagado') { %>
+                                                        <!-- Si el préstamo de este integrante ya se liquidó, muestra el botón gris inactivo -->
+                                                        <button type="button" class="btn btn-sm btn-secondary fw-bold text-white" style="font-size: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 6px; border: none; background: #94a3b8; cursor: not-allowed; opacity: 0.7; min-width: 120px; justify-content: center;" disabled title="Este crédito grupal ya se encuentra cancelado">
+                                                            🔒 Liquidado
+                                                        </button>
+                                                    <% } else { %>
+                                                        <% if (!global.gruposBotonPintado.includes(String(prestamo.grupo_id))) { %>
+                                                            <!-- Muestra el botón verde ÚNICAMENTE la primera vez que se cruza con este grupo activo -->
+                                                            <a href="/pagos/registrar-grupal/<%= prestamo.grupo_id %>" class="btn btn-sm btn-success fw-bold text-white shadow-sm" style="font-size: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 6px; border: none; background: #16a34a; text-decoration: none; min-width: 120px; justify-content: center;" title="Cobrar Junta Grupal">
+                                                                💸 Cobrar Grupo
+                                                            </a>
+                                                            <% 
+                                                            // Almacenamos el ID en texto para omitir los siguientes registros idénticos
+                                                            global.gruposBotonPintado.push(String(prestamo.grupo_id)); 
+                                                            %>
+                                                        <% } else { %>
+                                                            <!-- 🌟 RESERVA DE ESPACIO DE ALINEACIÓN: Contenedor invisible para que no se desalineen las cuadrículas ni floten las filas -->
+                                                            <div style="width: 120px;"></div>
+                                                        <% } %>
+                                                    <% } %>
+                                                <% } else { %>
+                                                    <!-- Espaciador simétrico para créditos que correspondan a individuales -->
+                                                    <div style="width: 120px;"></div>
+                                                <% } %>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                <% }); %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Bloque de Paginación -->
+                <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 20px;">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="/prestamos?page=<%= i %>&q=<%= (typeof busqueda !== 'undefined') ? busqueda : '' %>" style="padding: 6px 12px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; font-weight: 600; font-size: 13px; <%= currentPage === i ? 'background: #2563eb; color: white; border-color: #2563eb;' : 'background: white; color: #475569;' %>">
+                                <%= i %>
+                            </a>
+                        <% } %>
+                    </div>
+                <% } %>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<% global.gruposBotonPintado = []; %>
+<%- include('../partials/footer') %>
+

@@ -1,0 +1,231 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo de CREDIFACIL A&J -->
+        <%- include('../partials/sidebar') %>
+        
+        <!-- Contenedor Principal del Formulario de Préstamos -->
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="max-width: 850px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px;">
+                    <h2 style="color: #1e3a8a; margin: 0; font-weight: 800; font-size: 24px;">💵 Registrar Nuevo Crédito</h2>
+                </div>
+
+                <form id="formRegistrarPrestamo">
+                    
+                    <!-- Tipo de Préstamo -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Tipo de Préstamo:</label>
+                        <select id="select_tipo_prestamo" onchange="alternarCamposTipoPrestamo()" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #334155;">
+                            <option value="Individual">👤 Préstamo Individual Estándar</option>
+                            <option value="Grupal" selected>👥 Credito Grupal / Emprende Mujer</option>
+                        </select>
+                    </div>
+
+                    <!-- Seleccionar Grupo de Crédito (🔄 CAMBIO SEGURO: ID calibrado con el script) -->
+                    <div id="bloque_selector_grupo" style="margin-bottom: 20px;">
+                        <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Seleccionar Grupo de Crédito:</label>
+                        <select id="select_grupo_credito_id" onchange="cargarIntegrantesDelGrupoSeleccionado()" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #1e293b;">
+                            <option value="">-- SELECCIONA UNA JUNTA MASIVA ACTIVA --</option>
+                        </select>
+                    </div>
+
+                    <!-- Rejilla Dinámica de Integrantes -->
+                    <div id="bloque_integrantes_montos" style="margin-bottom: 25px;">
+                        <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 12px;">💰 Asignar montos por integrante:</label>
+                        <div id="contenedor_tabla_integrantes_dinamica" style="background: #f8fafc; padding: 20px; border-radius: 8px; text-align: center; color: #64748b; font-size: 13.5px; border: 1px dashed #cbd5e1;">
+                            Selecciona una junta masiva superior para mapear a sus clientas.
+                        </div>
+                    </div>
+                                                            <!-- Parámetros de Crédito -->
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="col-md-6 mb-3">
+                            <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Tasa de Interés (%):</label>
+                            <input type="number" id="interes_input" placeholder="Ej. 19" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600;">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Número de Cuotas:</label>
+                            <input type="number" id="cuotas_input" placeholder="Ej. 4" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600;">
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom: 25px;">
+                        <div class="col-md-6 mb-3">
+                            <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Frecuencia de Pago:</label>
+                            <select id="frecuencia_select" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #334155;">
+                                <option value="Semanal" selected>Semanal</option>
+                                <option value="Diario">Diario</option>
+                                <option value="Quincenal">Quincenal</option>
+                                <option value="Mensual">Mensual</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label style="font-weight: 700; color: #334155; font-size: 14px; display: block; margin-bottom: 6px;">Fecha de Inicio:</label>
+                            <input type="date" id="fecha_inicio_input" value="2026-08-29" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; color: #334155;">
+                        </div>
+                    </div>
+
+                    <!-- Botonera -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                        <a href="/prestamos" style="text-decoration: none; color: #64748b; font-weight: 700; font-size: 14px;">⬅️ Cancelar y Volver</a>
+                        <button type="button" onclick="procesarGuardadoDePrestamoMasivo()" style="background: #2563eb; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(37,99,235,0.15);">
+                            🖨️ Registrar Préstamo
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    inyectarCatalogoDeGruposEnElSelector();
+});
+
+async function inyectarCatalogoDeGruposEnElSelector() {
+    const selectGrupo = document.getElementById('select_grupo_credito_id');
+    try {
+        const response = await fetch('/grupos/api')
+            .catch(() => fetch('/grupos/all'))
+            .catch(() => fetch('/grupos/listar-json'));
+            
+        if (!response.ok) return;
+        const grupos = await response.json();
+
+        selectGrupo.innerHTML = '<option value="">-- SELECCIONA UNA JUNTA MASIVA ACTIVA --</option>';
+
+        if (grupos && grupos.length > 0) {
+            grupos.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.id;
+                opt.textContent = String(g.nombre).toUpperCase();
+                selectGrupo.appendChild(opt);
+            });
+            console.log("✨ Catálogo de juntas inyectado con éxito en el selector web.");
+        }
+    } catch(err) {
+        console.error("Error al poblar el selector de reenganche:", err);
+    }
+}
+
+async function cargarIntegrantesDelGrupoSeleccionado() {
+    const grupoId = document.getElementById('select_grupo_credito_id').value;
+    const contenedor = document.getElementById('contenedor_tabla_integrantes_dinamica');
+
+    if (!grupoId) {
+        contenedor.innerHTML = 'Selecciona una junta masiva superior para mapear a sus clientas.';
+        return;
+    }
+
+    try {
+        contenedor.innerHTML = '🔄 Extrayendo integrantes de Laragon...';
+        const response = await fetch(`/prestamos/api-miembrosGrupo/${grupoId}`);
+        const clientas = await response.json();
+
+        if (!clientas || clientas.length === 0) {
+            contenedor.innerHTML = '⚠️ Este grupo no registra integrantes en la tabla intermedia grupo_clientes. Agrégalas primero.';
+            return;
+        }
+
+        let htmlTabla = `
+            <table class="table" style="margin-bottom: 0; background: white; border-radius: 6px; overflow: hidden; border: 1px solid #e2e8f0; width:100%;">
+                <thead style="background: #f1f5f9;">
+                    <tr style="font-size: 11px; text-transform: uppercase; color:#475569; font-weight:700;">
+                        <th style="padding: 8px; text-align: left;">Cliente</th>
+                        <th style="padding: 8px; width: 180px;">Monto a Prestar (S/)</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        clientas.forEach(c => {
+            htmlTabla += `
+                <tr class="fila-credito-integrante" data-cliente-id="${c.cliente_id || c.id}">
+                    <td style="padding: 10px; text-align: left; font-weight: 700; color: #1e293b;">
+                        👤 ${String(c.nombre_completo || c.cliente_nombre).toUpperCase()}
+                        <div style="font-size: 11px; color:#64748b; font-weight: 500;">💳 DNI: ${c.dni || 'Verificado'}</div>
+                    </td>
+                    <td style="padding: 10px;">
+                        <input type="number" class="monto-individual-input" placeholder="Ej. 500" required style="width: 100%; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 700; color: #2563eb;">
+                    </td>
+                </tr>
+            `;
+        });
+
+        htmlTabla += '</tbody></table>';
+        contenedor.innerHTML = htmlTabla;
+
+    } catch (error) {
+        contenedor.innerHTML = '❌ Error de red al cargar integrantes.';
+    }
+}
+
+function alternarCamposTipoPrestamo() {
+    const tipo = document.getElementById('select_tipo_prestamo').value;
+    const bloqueGrupo = document.getElementById('bloque_selector_grupo');
+    const bloqueTabla = document.getElementById('bloque_integrantes_montos');
+    
+    if (tipo === 'Individual') {
+        bloqueGrupo.style.display = 'none';
+        bloqueTabla.style.display = 'none';
+        alert("💡 Nota: Cambiaste a formato Individual. Si deseas el reenganche grupal, vuelve a seleccionar 'Credito Grupal'.");
+    } else {
+        bloqueGrupo.style.display = 'block';
+        bloqueTabla.style.display = 'block';
+        inyectarCatalogoDeGruposEnElSelector();
+    }
+}
+
+async function procesarGuardadoDePrestamoMasivo() {
+    try {
+        const tipoPrestamo = document.getElementById('select_tipo_prestamo').value;
+        const grupoId = document.getElementById('select_grupo_credito_id').value;
+        const interes = document.getElementById('interes_input').value;
+        const cuotas = document.getElementById('cuotas_input').value;
+        const frecuencia = document.getElementById('frecuencia_select').value;
+        const fechaInicio = document.getElementById('fecha_inicio_input').value;
+
+        if (!interes || !cuotas || !fechaInicio) return alert("⚠️ Rellena la tasa de interés, las cuotas y la fecha de inicio.");
+
+        const creditosAAsentar = [];
+
+        if (tipoPrestamo === 'Grupal') {
+            if (!grupoId) return alert("⚠️ Selecciona un grupo de crédito de la lista.");
+            const filas = document.querySelectorAll('.fila-credito-integrante');
+            
+            if (filas.length === 0) return alert("⚠️ No hay integrantes cargadas para este grupo.");
+
+            for (const fila of filas) {
+                const cId = fila.getAttribute('data-cliente-id');
+                const monto = fila.querySelector('.monto-individual-input').value;
+                if (!monto || parseFloat(monto) <= 0) return alert("⚠️ Por favor, ingresa un monto válido mayor a cero para cada integrante.");
+                
+                creditosAAsentar.push({ cliente_id: cId, grupo_id: grupoId, monto: parseFloat(monto) });
+            }
+        }
+
+        const response = await fetch('/prestamos/guardar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tipo_prestamo: tipoPrestamo, interes, cuotas, frecuencia, fecha_inicio: fechaInicio, creditos: creditosAAsentar })
+        });
+
+        const resData = await response.json();
+        if (resData.status === 'success') {
+            alert("✅ ¡Nuevo ciclo de préstamos grupales registrado con éxito rotundo!");
+            window.location.href = '/prestamos';
+        } else {
+            alert("❌ " + resData.mensaje);
+        }
+    } catch (e) {
+        alert("❌ Error de red al asentar el nuevo crédito masivo.");
+    }
+}
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container" style="max-width: 900px;">
+                    <h2 class="mb-4">👤 Mi Perfil</h2>
+
+                    <% if(mensajeExito && mensajeExito.length > 0) { %>
+                        <div class="alert alert-success"><%= mensajeExito %></div>
+                    <% } %>
+                    <% if(mensajeError && mensajeError.length > 0) { %>
+                        <div class="alert alert-danger"><%= mensajeError %></div>
+                    <% } %>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card card-box h-100">
+                                <div class="card-header bg-white fw-bold">
+                                    <i class="bi bi-person-lines-fill text-primary"></i> Información Personal
+                                </div>
+                                <div class="card-body">
+                                    <form action="/perfil/actualizar" method="POST">
+                                        <div class="mb-3">
+                                            <label class="form-label">Rol de Usuario</label>
+                                            <input type="text" class="form-control" value="<%= usuarioData.rol.toUpperCase() %>" disabled readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre Completo</label>
+                                            <input type="text" name="nombre_completo" class="form-control" value="<%= usuarioData.nombre_completo %>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Correo Electrónico</label>
+                                            <input type="email" name="email" class="form-control" value="<%= usuarioData.email %>" required>
+                                        </div>
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-save"></i> Guardar Cambios
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-box h-100 border-danger">
+                                <div class="card-header bg-danger text-white fw-bold">
+                                    <i class="bi bi-shield-lock"></i> Seguridad y Contraseña
+                                </div>
+                                <div class="card-body">
+                                    <form action="/perfil/password" method="POST">
+                                        <div class="mb-3">
+                                            <label class="form-label">Contraseña Actual</label>
+                                            <input type="password" name="password_actual" class="form-control" placeholder="Requerido para cambios" required>
+                                        </div>
+                                        <hr>
+                                        <div class="mb-3">
+                                            <label class="form-label">Nueva Contraseña</label>
+                                            <input type="password" name="password_nueva" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Confirmar Nueva</label>
+                                            <input type="password" name="password_confirmar" class="form-control" required>
+                                        </div>
+                                        <div class="text-end">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-key"></i> Cambiar Contraseña
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

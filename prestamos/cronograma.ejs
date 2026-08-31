@@ -1,0 +1,87 @@
+<%- include('../partials/head') %>
+
+<style>
+    @media print {
+        .btn, button, nav, .fn-sidebar, #sidebarWrapper, .no-print { display: none !important; }
+        body, .fn-main-container { background: white !important; padding: 0 !important; margin: 0 !important; }
+        .card-cronograma { box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; }
+    }
+</style>
+
+<div class="container" style="max-width: 980px; margin: 30px auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    
+    <div class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #f8fafc; padding: 10px 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+        <span style="font-weight: 600; color: #64748b; font-size: 14px;">🖨️ Vista previa del recibo oficial de amortizaciones</span>
+        <a href="/prestamos" class="btn" style="background: white; border: 1px solid #cbd5e1; color: #475569; padding: 5px 15px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Volver</a>
+    </div>
+
+    <div class="card-cronograma" style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 30px;">
+            <span style="font-size: 24px;">📅</span>
+            <h2 style="color: #1e3a8a; margin: 0; font-weight: 800; font-size: 26px; letter-spacing: -0.5px;">Cronograma de Pagos</h2>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9;">
+            <div>
+                <span style="font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 3px;">
+                    Préstamo #<%= prestamo.id %> | <%= (prestamo.frecuencia || 'SEMANAL').toUpperCase() %>
+                </span>
+                <h4 style="color: #1e293b; margin: 0; font-weight: 700; font-size: 17px; text-transform: uppercase;"><%= prestamo.cliente_nombre %></h4>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; display: block;">Total a Pagar</span>
+                <h2 style="color: #1e293b; margin: 2px 0 0 0; font-weight: 800; font-size: 32px;">
+                    <span style="font-size: 20px; font-weight: 700; color: #1e293b;"><%= empresa.moneda %></span><%= parseFloat(prestamo.monto_total).toFixed(2) %>
+                </h2>
+            </div>
+        </div>
+
+        <table class="table" style="width: 100%; border-collapse: collapse; vertical-align: middle; margin-bottom: 30px;">
+            <thead>
+                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; text-align: center;">
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; width: 80px;"># Cuota</th>
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase;">Fecha Vence</th>
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase;">Capital</th>
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase;">Interés</th>
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase;">Total Cuota</th>
+                    <th style="padding: 12px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; width: 140px;">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% cronograma.forEach(function(item, index) { %>
+                    <tr style="border-bottom: 1px solid #f1f5f9; text-align: center;">
+                        <td style="padding: 15px 12px; font-weight: 800; color: #1e293b;"><%= index + 1 %></td>
+                        <td style="padding: 15px 12px; font-weight: 600; color: #64748b;"><%= item.fecha_formateada %></td>
+                        
+                        <!-- Nuevas columnas de desglose financiero -->
+                        <td style="padding: 15px 12px; font-weight: 600; color: #475569;"><%= empresa.moneda %> <%= parseFloat(item.capital_desglosado).toFixed(2) %></td>
+                        <td style="padding: 15px 12px; font-weight: 600; color: #475569;"><%= empresa.moneda %> <%= parseFloat(item.interes_desglosado).toFixed(2) %></td>
+                        
+                        <!-- Columna Total Acumulado -->
+                        <td style="padding: 15px 12px; font-weight: 700; color: #1e3a8a;"><%= empresa.moneda %> <%= parseFloat(item.monto || item.monto_cuota).toFixed(2) %></td>
+                        
+                        <td style="padding: 15px 12px;">
+                            <% if (item.estado_real === 'Pagado') { %>
+                                <span style="background: #e6f4ea; color: #137333; font-weight: 700; padding: 4px 12px; border-radius: 4px; font-size: 12px; border: 1px solid #ceead6; display: inline-block;">Cancelado</span>
+                            <% } else if (item.estado_real === 'Vencido') { %>
+                                <span style="background: #fce8e6; color: #c5221f; font-weight: 700; padding: 4px 12px; border-radius: 4px; font-size: 12px; border: 1px solid #fad2cf; display: inline-block;">⚠️ Vencido</span>
+                            <% } else { %>
+                                <span style="background: #e8f0fe; color: #1a73e8; font-weight: 700; padding: 4px 12px; border-radius: 4px; font-size: 12px; border: 1px solid #d2e3fc; display: inline-block;">Vigente</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="no-print" style="display: flex; justify-content: flex-end; margin-top: 10px;">
+            <button type="button" onclick="window.print()" style="background: #dc2626; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(220,38,38,0.15); display: inline-flex; align-items: center; gap: 8px;">
+                📄 Descargar PDF Oficial
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
