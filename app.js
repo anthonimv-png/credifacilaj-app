@@ -26,7 +26,7 @@ app.use(flash());
 
 // 4. Configuración del motor de plantillas EJS
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Se eliminó la línea app.set('views', ...); para que tome la ruta raíz por defecto
 
 // 5. Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
@@ -73,11 +73,11 @@ app.use('/auth', require('./routes/auth'));
 app.get('/', protegerRuta, dashboardController.mostrarDashboard);
 
 app.use('/clientes', protegerRuta, require('./routes/clientes'));
-app.use('/prestamos', require('./routes/prestamos'));
-app.use('/mantenimiento', require('./routes/mantenimiento'));
+app.use('/prestamos', protegerRuta, require('./routes/prestamos'));
+app.use('/mantenimiento', protegerRuta, require('./routes/mantenimiento'));
 //app.use('/pagos', protegerRuta, require('./routes/pagos'));
 app.use('/pagos', protegerRuta, require('./routes/pagos')); 
-app.use('/planilla', require('./routes/planilla')); // <--- ENLACE LIMPIO Y NUEVO ACTIVADO
+app.use('/planilla', protegerRuta, require('./routes/planilla')); // <--- ENLACE LIMPIO Y NUEVO ACTIVADO
 app.use('/empenos', protegerRuta, require('./routes/empenos'));
 app.use('/ahorros', protegerRuta, require('./routes/ahorros'));
 app.use('/usuarios', protegerRuta, require('./routes/usuarios'));
@@ -89,7 +89,7 @@ app.use('/caja', protegerRuta, require('./routes/caja'));
 app.use('/backup', protegerRuta, require('./routes/backup'));
 app.use('/bitacora', protegerRuta, require('./routes/bitacora'));
 app.use('/simulador', protegerRuta, require('./routes/simulador')); // <--- NUEVA RUTA
-app.use('/grupos', require('./routes/grupos'));
+app.use('/grupos', protegerRuta, require('./routes/grupos'));
 app.use((req, res, next) => {
     res.status(404).render('404');
 });
