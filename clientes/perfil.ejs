@@ -1,0 +1,102 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo -->
+        <%- include('../partials/sidebar') %>
+        
+        <!-- Contenido principal -->
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="max-width: 1150px; margin: 20px auto;">
+                
+                <!-- Encabezado superior -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <div>
+                        <h2 style="color: #1e3a8a; margin: 0; font-weight: 700;">👤 Perfil Completo del Cliente</h2>
+                        <p style="color: #64748b; margin: 5px 0 0 0;">Ficha socioeconómica, información de recaudo y archivos de respaldo.</p>
+                    </div>
+                    <a href="/clientes" style="color: #475569; background: #f1f5f9; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; border: 1px solid #cbd5e1;">
+                        ⬅️ Volver al Listado
+                    </a>
+                </div>
+
+                <!-- Bloque de Información: Datos Personales vs Datos Comerciales -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                    
+                    <!-- Tarjeta 1: Información General -->
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                        <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">📋 Datos Personales</h3>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Nombres y Apellidos:</strong> <%= cliente.nombre %> <%= cliente.apellido %></p>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">DNI Documento:</strong> <%= cliente.dni %></p>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Celular / Teléfono:</strong> <%= cliente.telefono || 'No registrado' %></p>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Dirección Domicilio:</strong> <%= cliente.direccion || 'No registrada' %></p>
+                        <p style="margin-bottom: 0; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Referencia Domicilio:</strong> <span style="color: #0284c7; font-weight: 600;"><%= cliente.referencia_domicilio || 'No especificada' %></span></p>
+                    </div>
+
+                    <!-- Tarjeta 2: Información del Negocio y Cuentas -->
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                        <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">💼 Información Comercial y Recaudo</h3>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Giro / Negocio:</strong> <%= cliente.negocio ? cliente.negocio.toUpperCase() : 'No registrado' %></p>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Dirección del Negocio:</strong> <%= cliente.direccion_negocio || 'No registrada' %></p>
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Cuenta Banco BCP:</strong> <span style="font-family: monospace; font-weight: bold; color: #0f172a;"><%= cliente.cuenta_bcp || 'No vinculada' %></span></p>
+                        <p style="margin-bottom: 0; font-size: 14px; color: #334155;"><strong style="color: #64748b;">Número de Yape:</strong> <span style="font-weight: bold; color: #0369a1;">📱 <%= cliente.numero_yape || 'No activo' %></span></p>
+                    </div>
+
+                </div>
+
+                <!-- Tarjeta 3: Galería de Fotos (4 Cuadrículas estéticas y ampliables) -->
+                <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 25px;">
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">📷 Archivos y Fotografías de Respaldo</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; text-align: center;">
+                        
+                        <!-- Foto 1 -->
+                        <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                            <span style="display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">FACHADA / NEGOCIO</span>
+                            <% if (cliente.foto_1) { %>
+                                <img src="/uploads/clientes/<%= cliente.foto_1 %>" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #cbd5e1;" onclick="window.open(this.src)">
+                            <% } else { %>
+                                <div style="height: 140px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-style: italic; font-size: 12px; border: 2px dashed #cbd5e1; border-radius: 6px; background: white;">Sin archivo</div>
+                            <% } %>
+                        </div>
+
+                        <!-- Foto 2 -->
+                        <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                            <span style="display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">DNI ANVERSO</span>
+                            <% if (cliente.foto_2) { %>
+                                <img src="/uploads/clientes/<%= cliente.foto_2 %>" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #cbd5e1;" onclick="window.open(this.src)">
+                            <% } else { %>
+                                <div style="height: 140px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-style: italic; font-size: 12px; border: 2px dashed #cbd5e1; border-radius: 6px; background: white;">Sin archivo</div>
+                            <% } %>
+                        </div>
+
+                        <!-- Foto 3 -->
+                        <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                            <span style="display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">DNI REVERSO</span>
+                            <% if (cliente.foto_3) { %>
+                                <img src="/uploads/clientes/<%= cliente.foto_3 %>" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #cbd5e1;" onclick="window.open(this.src)">
+                            <% } else { %>
+                                <div style="height: 140px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-style: italic; font-size: 12px; border: 2px dashed #cbd5e1; border-radius: 6px; background: white;">Sin archivo</div>
+                            <% } %>
+                        </div>
+
+                        <!-- Foto 4 -->
+                        <div style="border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc;">
+                            <span style="display: block; font-size: 11px; font-weight: 700; color: #16a34a; margin-bottom: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">RECIBO LUZ / AGUA</span>
+                            <% if (cliente.foto_4) { %>
+                                <img src="/uploads/clientes/<%= cliente.foto_4 %>" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid #cbd5e1;" onclick="window.open(this.src)">
+                            <% } else { %>
+                                <div style="height: 140px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-style: italic; font-size: 12px; border: 2px dashed #cbd5e1; border-radius: 6px; background: white;">Sin recibo</div>
+                            <% } %>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4: BLINDADA CONTRA ERRORES - Mapea de forma segura tus módulos nativos secundarios sin colgar la hoja -->
+                <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px;">💳 Historial de Créditos y Movimientos</h3>
+                    
+                    <div style="font-size: 14px; color: #475569; line-height: 1.6;">
+📊 Préstamos Activos: <%= (typeof prestamos !== 'undefined' && prestamos) ? prestamos.length : 0 %> registros detectados.💍 Contratos de Empeño: <%= (typeof empenos !== 'undefined' && empenos) ? empenos.length : 0 %> contratos vinculados.🏦 Cuentas de Ahorro: <%= (typeof cuentaAhorro !== 'undefined' && cuentaAhorro) ? 'Cuenta activa vinculada' : 'Sin cuenta registrada' %>.<%- include('../partials/footer') %>

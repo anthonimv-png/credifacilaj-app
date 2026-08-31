@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>🛡️ Bitácora de Auditoría</h2>
+                        <span class="badge bg-secondary">Últimos 100 movimientos</span>
+                    </div>
+
+                    <div class="card card-box p-0 border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Fecha / Hora</th>
+                                        <th>Usuario</th>
+                                        <th>Acción</th>
+                                        <th>Detalle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (registros && registros.length > 0) { %>
+                                        <% registros.forEach(reg => { %>
+                                            <tr>
+                                                <td class="small text-muted" style="white-space: nowrap;">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    <% 
+                                                        let fechaMostrar = reg.fecha || reg.created_at;
+                                                        let fechaTexto = fechaMostrar ? new Date(fechaMostrar).toLocaleString() : '---';
+                                                    %>
+                                                    <%= fechaTexto %>
+                                                </td>
+                                                <td>
+                                                    <div class="fw-bold">
+                                                        <i class="bi bi-person-circle me-1"></i> 
+                                                        <%= reg.usuario || 'Sistema' %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <% 
+                                                        let badgeClass = 'bg-secondary';
+                                                        let accion = reg.accion || 'INFO';
+                                                        if(accion.includes('REGISTRAR') || accion.includes('CREAR')) badgeClass = 'bg-success';
+                                                        if(accion.includes('ELIMINAR')) badgeClass = 'bg-danger';
+                                                        if(accion.includes('EDITAR')) badgeClass = 'bg-warning text-dark';
+                                                    %>
+                                                    <span class="badge <%= badgeClass %>"><%= accion %></span>
+                                                </td>
+                                                <td class="text-secondary small">
+                                                    <%= reg.detalle || '-' %>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="4" class="text-center py-5">
+                                                <i class="bi bi-shield-check fs-1 text-muted opacity-50"></i>
+                                                <p class="mt-2 text-muted">No hay registros de actividad recientes.</p>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-end text-muted small">
+                        <i class="bi bi-info-circle"></i> Registro inmutable de seguridad.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

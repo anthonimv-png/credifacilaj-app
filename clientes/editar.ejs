@@ -1,0 +1,149 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo -->
+        <%- include('../partials/sidebar') %>
+        
+        <!-- Columna derecha del contenido principal -->
+        <div class="col py-3 fn-main-container" style="background: #f8fafc; min-height: 100vh; padding: 25px;">
+            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 950px; margin: 20px auto;">
+                
+                <h2 style="color: #1e3a8a; margin-bottom: 25px; font-weight: 700; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">
+                    📝 Editar Datos del Cliente
+                </h2>
+
+                <!-- Mensajes Flash de Alerta -->
+                <% if (typeof mensajeError !== 'undefined' && mensajeError && mensajeError.length > 0) { %>
+                    <div class="alert alert-danger" role="alert"><%= mensajeError %></div>
+                <% } %>
+
+                <!-- Formulario habilitado para la transmisión de archivos encriptados -->
+                <form action="/clientes/actualizar/<%= cliente.id %>" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- 📋 SECTOR 1: Información Personal Obligatoria -->
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📋 Datos de Identificación</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Nombres del Cliente:</label>
+                            <input type="text" name="nombre" required value="<%= cliente.nombre %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Apellidos del Cliente:</label>
+                            <input type="text" name="apellido" required value="<%= cliente.apellido %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Número de DNI:</label>
+                            <input type="text" name="dni" required maxlength="8" value="<%= cliente.dni %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Correo Electrónico (Opcional):</label>
+                            <input type="email" name="email" value="<%= cliente.email || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Teléfono / Celular:</label>
+                            <input type="text" name="telefono" value="<%= cliente.telefono || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Dirección de Domicilio:</label>
+                            <input type="text" name="direccion" value="<%= cliente.direccion || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Referencia de Domicilio:</label>
+                        <input type="text" name="referencia_domicilio" value="<%= cliente.referencia_domicilio || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                    </div>
+
+                    <!-- 💼 SECTOR 2: Información Económica y de Negocio -->
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">💼 Información Económica y de Negocio</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Giro / Nombre del Negocio:</label>
+                            <input type="text" name="negocio" value="<%= cliente.negocio || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Dirección del Negocio:</label>
+                            <input type="text" name="direccion_negocio" value="<%= cliente.direccion_negocio || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                    </div>
+
+                                        <!-- 🏦 SECTOR 3: Datos Bancarios y Digitales -->
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">💳 Cuentas de Recaudo</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">N° Cuenta Banco BCP:</label>
+                            <input type="text" name="cuenta_bcp" value="<%= cliente.cuenta_bcp || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px;">Número de Yape:</label>
+                            <input type="text" name="numero_yape" value="<%= cliente.numero_yape || '' %>" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; outline: none;">
+                        </div>
+                    </div>
+
+                    <!-- 📸 SECTOR 4: Adjuntar / Actualizar Fotografías (UNIFICACIÓN SIN TEXTOS CORRIDOS) -->
+                    <h3 style="color: #1e3a8a; font-size: 16px; font-weight: 700; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">📷 Actualizar Fotos Adjuntas (Dejar vacío para mantener foto anterior)</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px; font-size: 13px;">FOTO 1: FACHADA / NEGOCIO</label>
+                            <% if (cliente.foto_1) { %>
+                                <div style="margin-bottom: 10px;"><small style="color: #16a34a; font-weight: bold;">✓ Archivo guardado:</small><br><span style="font-size: 11px; color: #64748b; font-family: monospace; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= cliente.foto_1 %></span></div>
+                            <% } %>
+                            <input type="file" name="fotos" accept="image/*" style="width: 100%; font-size: 13px;">
+                        </div>
+                        
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px; font-size: 13px;">FOTO 2: DNI ANVERSO</label>
+                            <% if (cliente.foto_2) { %>
+                                <div style="margin-bottom: 10px;"><small style="color: #16a34a; font-weight: bold;">✓ Archivo guardado:</small><br><span style="font-size: 11px; color: #64748b; font-family: monospace; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= cliente.foto_2 %></span></div>
+                            <% } %>
+                            <input type="file" name="fotos" accept="image/*" style="width: 100%; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <label style="display: block; font-weight: 600; color: #4b5563; margin-bottom: 8px; font-size: 13px;">FOTO 3: DNI REVERSO</label>
+                            <% if (cliente.foto_3) { %>
+                                <div style="margin-bottom: 10px;"><small style="color: #16a34a; font-weight: bold;">✓ Archivo guardado:</small><br><span style="font-size: 11px; color: #64748b; font-family: monospace; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= cliente.foto_3 %></span></div>
+                            <% } %>
+                            <input type="file" name="fotos" accept="image/*" style="width: 100%; font-size: 13px;">
+                        </div>
+
+                        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #16a34a;">FOTO 4: RECIBO LUZ / AGUA</label>
+                            <% if (cliente.foto_4) { %>
+                                <div style="margin-bottom: 10px;"><small style="color: #16a34a; font-weight: bold;">✓ Archivo guardado:</small><br><span style="font-size: 11px; color: #64748b; font-family: monospace; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= cliente.foto_4 %></span></div>
+                            <% } %>
+                            <input type="file" name="fotos" accept="image/*" style="width: 100%; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <!-- 💾 BOTONERA DE ACCIÓN -->
+                    <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #f3f4f6; padding-top: 20px;">
+                        <a href="/clientes" style="background: white; color: #64748b; border: 1px solid #cbd5e1; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 15px;">Cancelar</a>
+                        <button type="submit" style="background: #eab308; color: white; border: none; padding: 12px 35px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 15px; box-shadow: 0 4px 6px -1px rgba(234, 179, 8, 0.2);">
+                            💾 Actualizar Datos del Cliente
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,105 @@
+<%- include('../partials/head') %>
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        
+        <!-- Menú lateral izquierdo de CREDIFACIL A&J -->
+        <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>👥 Listado de Clientes</h2>
+                        <a href="/clientes/crear" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Nuevo Cliente
+                        </a>
+                    </div>
+
+                    <% if(mensajeExito && mensajeExito.length > 0) { %>
+                        <div class="d-none" id="flashMessageSuccess"><%= mensajeExito %></div>
+                    <% } %>
+
+                    <div class="card card-box p-3 mb-4 bg-light">
+                        <form action="/clientes" method="GET" class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <label class="col-form-label fw-bold"><i class="bi bi-search"></i> Buscar:</label>
+                            </div>
+                            <div class="col-auto flex-grow-1">
+                                <input type="text" name="q" class="form-control" placeholder="Nombre, Apellido o DNI..." value="<%= busqueda %>">
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-dark">Filtrar</button>
+                                <% if(busqueda) { %>
+                                    <a href="/clientes" class="btn btn-outline-secondary">Limpiar</a>
+                                <% } %>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card card-box p-3">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Foto</th>
+                                        <th>DNI</th>
+                                        <th>Cliente</th>
+                                        <th>Contacto</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (clientes.length > 0) { %>
+                                        <% clientes.forEach(cliente => { %>
+                                            <tr>
+                                                <td>
+                                                    <% if(cliente.foto) { %>
+                                                        <img src="/uploads/<%= cliente.foto %>" class="rounded-circle border" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    <% } else { %>
+                                                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                            <%= cliente.nombre.charAt(0) %>
+                                                        </div>
+                                                    <% } %>
+                                                </td>
+                                                <td><span class="badge bg-light text-dark border"><%= cliente.dni %></span></td>
+                                                <td>
+                                                    <div class="fw-bold"><%= cliente.nombre %> <%= cliente.apellido %></div>
+                                                    <small class="text-muted"><%= cliente.direccion || 'Sin dirección' %></small>
+                                                </td>
+                                                <td>
+                                                    <div class="small"><i class="bi bi-telephone"></i> <%= cliente.telefono || '-' %></div>
+                                                    <div class="small text-muted"><i class="bi bi-envelope"></i> <%= cliente.email || '-' %></div>
+                                                </td>
+                                                <td>
+                                                    <a href="/clientes/perfil/<%= cliente.id %>" class="btn btn-sm btn-info text-white me-1" title="Ver Perfil">
+                                                        <i class="bi bi-eye-fill"></i>
+                                                    </a>
+                                                    
+                                                    <a href="/clientes/editar/<%= cliente.id %>" class="btn btn-sm btn-outline-primary" title="Editar">
+                                                        <i class="bi bi-pencil-fill"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <tr><td colspan="5" class="text-center py-5">No se encontraron clientes.</td></tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <% if (totalPages > 1) { %>
+                            <nav class="mt-4 d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Página <%= currentPage %> de <%= totalPages %></small>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item <%= currentPage == 1 ? 'disabled' : '' %>"><a class="page-link" href="/clientes?page=<%= currentPage - 1 %>&q=<%= busqueda %>">Anterior</a></li>
+                                    <li class="page-item <%= currentPage == totalPages ? 'disabled' : '' %>"><a class="page-link" href="/clientes?page=<%= currentPage + 1 %>&q=<%= busqueda %>">Siguiente</a></li>
+                                </ul>
+                            </nav>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

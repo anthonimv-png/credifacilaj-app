@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+
+            <div class="col py-3">
+                <div class="container" style="max-width: 900px;">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>📠 Corte de Caja Diario</h2>
+                        
+                        <form action="/caja" method="GET" class="d-flex gap-2 bg-white p-2 rounded shadow-sm border">
+                            <input type="date" name="fecha" class="form-control" value="<%= fecha %>">
+                            <button type="submit" class="btn btn-primary">Consultar</button>
+                        </form>
+                    </div>
+
+                    <div class="card card-box mb-4 text-center p-4 <%= datos.balanceDia >= 0 ? 'border-success' : 'border-danger' %>" style="border-width: 2px;">
+    <h5 class="text-muted text-uppercase ls-1">Balance Neto del Día</h5>
+    <h1 class="display-3 fw-bold <%= datos.balanceDia >= 0 ? 'text-success' : 'text-danger' %>">
+        <%= empresa.moneda || '$' %> <%= parseFloat(datos.balanceDia).toFixed(2) %>
+    </h1>
+    <p class="mb-0 text-muted">Dinero en Efectivo generado el <%= new Date(fecha).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></p>
+</div>
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card card-box h-100 border-0 shadow-sm">
+                                <div class="card-header bg-success text-white fw-bold">
+                                    <i class="bi bi-arrow-down-circle"></i> INGRESOS (Entrada)
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-striped mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-4">Cobros de Préstamos</td>
+                                                <td class="text-end pe-4 fw-bold text-success">+ <%= parseFloat(datos.cobrosPrestamos).toFixed(2) %></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4">Depósitos de Ahorro</td>
+                                                <td class="text-end pe-4 fw-bold text-success">+ <%= parseFloat(datos.depositosAhorro).toFixed(2) %></td>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <td class="ps-4 fw-bold">TOTAL INGRESOS</td>
+                                                <td class="text-end pe-4 fw-bold">+ <%= parseFloat(datos.totalIngresos).toFixed(2) %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-box h-100 border-0 shadow-sm">
+                                <div class="card-header bg-danger text-white fw-bold">
+                                    <i class="bi bi-arrow-up-circle"></i> EGRESOS (Salida)
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-striped mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-4">Préstamos Entregados</td>
+                                                <td class="text-end pe-4 fw-bold text-danger">- <%= parseFloat(datos.salidasPrestamos).toFixed(2) %></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4">Retiros de Ahorro</td>
+                                                <td class="text-end pe-4 fw-bold text-danger">- <%= parseFloat(datos.retirosAhorro).toFixed(2) %></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4">Gastos Operativos</td>
+                                                <td class="text-end pe-4 fw-bold text-danger">- <%= parseFloat(datos.gastosOperativos).toFixed(2) %></td>
+                                            </tr>
+                                            <tr class="table-danger">
+                                                <td class="ps-4 fw-bold">TOTAL EGRESOS</td>
+                                                <td class="text-end pe-4 fw-bold">- <%= parseFloat(datos.totalEgresos).toFixed(2) %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <a href="/caja/imprimir?fecha=<%= fecha %>" target="_blank" class="btn btn-dark btn-lg px-5 shadow">
+                            <i class="bi bi-printer-fill"></i> Imprimir Ticket de Cierre
+                        </a>
+                        <p class="text-muted mt-2 small">Genera un PDF formato ticket (80mm) para control de caja.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>

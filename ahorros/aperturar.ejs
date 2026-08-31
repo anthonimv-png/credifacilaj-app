@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head') %>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <%- include('../partials/sidebar') %>
+            <div class="col py-3">
+                <div class="container" style="max-width: 600px;">
+                    <h2 class="mb-4">Nueva Cuenta de Ahorros</h2>
+                    
+                    <% if(mensajeError && mensajeError.length > 0) { %>
+                        <div class="alert alert-danger"><%= mensajeError %></div>
+                    <% } %>
+
+                    <div class="card card-box p-4">
+                        <form action="/ahorros/guardar" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Seleccione Cliente</label>
+                                <select name="cliente_id" class="form-select" required>
+                                    <option value="">-- Buscar Cliente --</option>
+                                    <% clientes.forEach(c => { %>
+                                        <option value="<%= c.id %>"><%= c.nombre %> <%= c.apellido %> (DNI: <%= c.dni %>)</option>
+                                    <% }) %>
+                                </select>
+                                <div class="form-text">Se creará una cuenta con saldo inicial $0.00</div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/ahorros" class="btn btn-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<%- include('../partials/footer') %>
